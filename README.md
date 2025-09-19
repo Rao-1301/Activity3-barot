@@ -1,57 +1,39 @@
-# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
+# Activity 3
+Name: Barot Pranav
+Student ID: 16373096
 
-This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
+# Token Address: 0x8464135c8f25da09e49bc8782676a84730c318bc
+<img width="1067" height="336" alt="image" src="https://github.com/user-attachments/assets/60c52a49-28d9-4b4d-81e9-81839430b589" />
+deploy block 1n
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+<img width="930" height="250" alt="image" src="https://github.com/user-attachments/assets/0c3b9d59-534f-461a-a004-405ac5b1102d" />
 
-## Project Overview
+<img width="1046" height="300" alt="image" src="https://github.com/user-attachments/assets/30fa52f0-af8b-492d-8137-9f0c7bb0c90e" />
 
-This example project includes:
+# Console Output 
+<img width="941" height="258" alt="image" src="https://github.com/user-attachments/assets/05c3bfef-4ec9-48ef-88eb-4c9a118ffb1a" />
+From contract events & constructor:
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+Roles granted at deploy:
 
-## Usage
+DEFAULT_ADMIN_ROLE → Admin
 
-### Running Tests
+MINTER_ROLE → Minter
 
-To run all the tests in the project, execute the following command:
+PAUSER_ROLE → Pauser
+<img width="995" height="685" alt="image" src="https://github.com/user-attachments/assets/9f5971a1-7ed6-45f7-aa27-c7d1e18c3a32" />
+<img width="1144" height="221" alt="image" src="https://github.com/user-attachments/assets/e1f9a9c6-2d2a-4e8f-840e-8c8484dee8fc" />
 
-```shell
-npx hardhat test
-```
+# Short note on gas Awareness
+Our batch airdrop is gas-aware because it executes multiple token transfers in a single transaction rather than sending them individually. This design amortizes the gas cost across all recipients, reducing overhead.
 
-You can also selectively run the Solidity or `node:test` tests:
+Key gas-saving features:
+Custom Errors – The contract uses ArrayLengthMismatch and CapExceeded errors instead of require() strings, which are cheaper in gas when reverting.
+Calldata Usage – Recipients and amounts are passed as calldata arrays, minimizing memory copying and lowering gas.
+Unchecked Loops – The for loops use unchecked { ++i; } to skip redundant overflow checks, saving gas on iteration.
+Single Transaction Amortization – Instead of multiple transfer() calls, minting to all recipients at once reduces total gas by ~25.65% as shown in our output:
 
-```shell
-npx hardhat test solidity
-npx hardhat test nodejs
-```
-
-### Make a deployment to Sepolia
-
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
-
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
-
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
-
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
-
-After setting the variable, you can run the deployment with the Sepolia network:
-
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
-```
+Batch gasUsed: 77899
+Singles total gasUsed: 104780
+Singles total gasUsed: 104780
+This demonstrates that batching transactions in a smart contract is significantly more efficient than sending individual transfers.
